@@ -62,7 +62,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
     private var currentLat = 0.0
     private var currentLong = 0.0
     private var radius = 1000
-    private var lastSelected = 0
+    private var lastSelected = ""
 
     private lateinit var etSearchBar: EditText
     private lateinit var btnCurrentLocation: CardView
@@ -362,27 +362,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         Log.d(TAG, "onNavigationItemSelected: ${item.itemId}")
         when (item.itemId) {
             R.id.menu_item_restaurant -> {
-                lastSelected = R.id.menu_item_restaurant
                 getRestaurants()
             }
             R.id.menu_item_gas_station -> {
-                lastSelected = R.id.menu_item_gas_station
                 getGasStations()
             }
             R.id.menu_item_groceries -> {
-                lastSelected = R.id.menu_item_groceries
                 getGroceries()
             }
             R.id.menu_item_hotel -> {
-                lastSelected = R.id.menu_item_hotel
                 getHotels()
             }
             R.id.menu_item_pharmacy -> {
-                lastSelected = R.id.menu_item_pharmacy
                 getPharmacy()
             }
             R.id.menu_item_all -> {
-                lastSelected = R.id.menu_item_all
                 getAll()
             }
         }
@@ -430,6 +424,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 
         })
 
+        lastSelected = "restaurant"
+
     }
 
     private fun getGasStations() {
@@ -458,7 +454,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
                 )
             }
 
+            placesAdapter.updatePlaceList(gasStationList)
+            if (rvPlaces.visibility == View.GONE)
+            {
+                rvPlaces.visibility = View.VISIBLE
+                rvPlaces.startAnimation(slide_in_bottom)
+            }
+
         })
+
+        lastSelected = "gas_station"
 
     }
 
@@ -487,8 +492,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
                 )
             }
 
+            placesAdapter.updatePlaceList(groceriesList)
+            if (rvPlaces.visibility == View.GONE)
+            {
+                rvPlaces.visibility = View.VISIBLE
+                rvPlaces.startAnimation(slide_in_bottom)
+            }
+
         })
 
+        lastSelected = "supermarket"
     }
 
     private fun getHotels() {
@@ -516,8 +529,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
                 )
             }
 
-        })
+            placesAdapter.updatePlaceList(hotelList)
+            if (rvPlaces.visibility == View.GONE)
+            {
+                rvPlaces.visibility = View.VISIBLE
+                rvPlaces.startAnimation(slide_in_bottom)
+            }
 
+        })
+        lastSelected = "lodging"
     }
 
     private fun getPharmacy() {
@@ -545,8 +565,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
                 )
             }
 
-        })
+            placesAdapter.updatePlaceList(pharmacyList)
+            if (rvPlaces.visibility == View.GONE)
+            {
+                rvPlaces.visibility = View.VISIBLE
+                rvPlaces.startAnimation(slide_in_bottom)
+            }
 
+        })
+        lastSelected = "pharmacy"
     }
 
     private fun getAll() {
@@ -573,7 +600,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
                 )
             }
 
+            placesAdapter.updatePlaceList(allList)
+            if (rvPlaces.visibility == View.GONE)
+            {
+                rvPlaces.visibility = View.VISIBLE
+                rvPlaces.startAnimation(slide_in_bottom)
+            }
+
         })
+        lastSelected = ""
     }
     //**********************************************************************************
 
@@ -587,8 +622,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
     override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
         seekBarTextView.text = "$p1 Meters"
         radius = p1
-
-        drawCurrentCircle()
     }
 
     override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -597,6 +630,36 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 
     override fun onStopTrackingTouch(p0: SeekBar?) {
 
+        var allList: MutableList<PlacesResult> = mutableListOf()
+        val lat = mMap.cameraPosition.target.latitude
+        val long = mMap.cameraPosition.target.longitude
+
+        mMap.clear()
+        drawRadiusCircle(lat, long)
+        drawCurrentCircle()
+
+
+        if (lastSelected == "") {
+            mapViewModel.getPlaces("$lat,$long", "$radius")
+        } else {
+            mapViewModel.getPlacesType("$lat,$long", "$radius", "$lastSelected")
+        }
+        mapViewModel.placesLiveData.observe(this, Observer {
+            mMap.clear()
+            drawCurrentCircle()
+            drawRadiusCircle(lat, long)
+            it.forEach {
+                val lat = it.geometry.location.lat
+                val lng = it.geometry.location.lng
+                val name = it.name
+                allList.add(it)
+                mMap.addMarker(
+                    MarkerOptions().position(LatLng(lat, lng))
+                        .title(name)
+                )
+            }
+
+        })
     }
 
 
