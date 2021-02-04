@@ -35,10 +35,10 @@
                 android:layout_margin="8dp"
                 android:elevation="4dp"
                 map:boxBackgroundColor="@color/white"
-                map:boxCornerRadiusBottomEnd="20dp"
-                map:boxCornerRadiusBottomStart="20dp"
-                map:boxCornerRadiusTopEnd="20dp"
-                map:boxCornerRadiusTopStart="20dp"
+                map:boxCornerRadiusBottomEnd="10dp"
+                map:boxCornerRadiusBottomStart="10dp"
+                map:boxCornerRadiusTopEnd="10dp"
+                map:boxCornerRadiusTopStart="10dp"
                 map:endIconMode="clear_text"
                 map:layout_constraintEnd_toEndOf="parent"
                 map:layout_constraintStart_toStartOf="parent"
@@ -86,6 +86,7 @@
                 map:layout_constraintTop_toBottomOf="@+id/serachInputLayout"
                 map:rippleColor="#442C2E"
                 map:strokeColor="#80FFFFFF"
+                android:visibility="gone"
                 map:strokeWidth="1dp" />
 
 
@@ -103,6 +104,7 @@
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 map:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 map:layout_constraintBottom_toBottomOf="@+id/map"
                 map:layout_constraintEnd_toEndOf="parent"
@@ -145,9 +147,8 @@
                 android:elevation="2dp"
                 map:cardCornerRadius="15dp"
                 map:cardElevation="2dp"
-                map:layout_constraintBottom_toBottomOf="@+id/btn_search_area"
                 map:layout_constraintEnd_toEndOf="parent"
-                map:layout_constraintTop_toTopOf="@+id/btn_search_area">
+                map:layout_constraintTop_toBottomOf="@+id/serachInputLayout">
 
                 <ImageView
                     android:layout_width="wrap_content"

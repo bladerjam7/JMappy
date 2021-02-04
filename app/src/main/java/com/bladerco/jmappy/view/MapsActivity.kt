@@ -200,7 +200,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-
+        mMap.setOnCameraMoveListener {
+            if (rvPlaces.visibility == View.VISIBLE) {
+                rvPlaces.startAnimation(slide_out_bottom)
+                rvPlaces.visibility = View.GONE
+            }
+        }
     }
 
     override fun onLocationChanged(p0: Location) {
@@ -253,6 +258,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
                     .radius(40.0)
                     .strokeColor(Color.BLUE)
                     .fillColor(Color.BLUE)
+
             )
         } else {
             Log.d(TAG, "drawCurrentCircle: mMap Not Initialized")
@@ -416,6 +422,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
                 )
             }
             placesAdapter.updatePlaceList(restaurantList)
+            if (rvPlaces.visibility == View.GONE)
+            {
+                rvPlaces.visibility = View.VISIBLE
+                rvPlaces.startAnimation(slide_in_bottom)
+            }
+
         })
 
     }
