@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">JMappy</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="restaurants">Restaurants</string>
+    <string name="gas_stations">Gas Stations</string>
+    <string name="groceries">Groceries</string>
+    <string name="pharmacy">Pharmacy</string>
+    <string name="hotels">Hotels</string>
+    <string name="Open">Open navigation drawer</string>
+    <string name="Close">Close navigation drawer</string>
+    <string name="all">All</string>
+</resources>
